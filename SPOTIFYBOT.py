@@ -55,4 +55,6 @@ sheet = service.spreadsheets()
 data = [['Username', 'Top Song']]
 
 request = sheet.values().update(spreadsheetId=spreadsheetURL, range='Sheet1!A1, valueInputOption='USER_ENTERED', body={'values':data}).execute()
+                                
+return 0
 
