@@ -6,9 +6,9 @@ import os.path
 from googleapiclient.discovery import build
 from google.oauth2 import service_account
 
-SPOTIPY_CLIENT_ID = 'ee88aca00bc74b3d833b4899198f62c8'
-SPOTIPY_CLIENT_SECRET = 'e1c12da7cb384f0985c57831d1bfff7a'
-SPOTIPY_REDIRECT_URI = 'http://127.0.0.1:9090'
+SPOTIPY_CLIENT_ID = 'client_id'
+SPOTIPY_CLIENT_SECRET = 'client_secret'
+SPOTIPY_REDIRECT_URI = 'URI'
 SCOPE = 'user-top-read'
 print("error message")
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=SPOTIPY_CLIENT_ID, 
