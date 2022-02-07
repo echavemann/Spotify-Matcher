@@ -2,6 +2,9 @@ import requests
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 import json
+import os.path
+from googleapiclient.discovery import build
+from google.oauth2 import service_account
 
 SPOTIPY_CLIENT_ID = 'ee88aca00bc74b3d833b4899198f62c8'
 SPOTIPY_CLIENT_SECRET = 'e1c12da7cb384f0985c57831d1bfff7a'
@@ -36,4 +39,20 @@ def get_track_features(id):
 
 for track in track_ids:
     print(get_track_features(track)[0])
+    
+SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+SERVICE_ACCOUNT_FILE = ('key.json')
+
+creds = None
+creds = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+
+spreadsheetURL = '1c1qFAip2v4ih5Rdma5icaVI-pMka7sw-ovbSDd0NAfI'
+
+service = build('sheets', 'v4', credentials=creds)
+
+sheet = service.spreadsheets()
+
+data = [['Username', 'Top Song']]
+
+request = sheet.values().update(spreadsheetId=spreadsheetURL, range='Sheet1!A1, valueInputOption='USER_ENTERED', body={'values':data}).execute()
 
