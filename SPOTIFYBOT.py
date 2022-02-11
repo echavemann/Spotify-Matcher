@@ -1,5 +1,6 @@
 import requests
 import spotipy
+import pandas as pd
 from spotipy.oauth2 import SpotifyOAuth
 import json
 from google.auth.transport.requests import Request
@@ -7,10 +8,10 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from google.oauth2 import service_account
 
-SPOTIPY_CLIENT_ID = ''
-SPOTIPY_CLIENT_SECRET = ''
+SPOTIPY_CLIENT_ID = 'clientid'
+SPOTIPY_CLIENT_SECRET = 'secretkey'
 SPOTIPY_REDIRECT_URI = 'http://127.0.0.1:9090'
-SCOPE = 'user-top-read', 'user-top-read'
+SCOPE = 'user-top-read', 'user-library-read'
 
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=SPOTIPY_CLIENT_ID, 
 client_secret=SPOTIPY_CLIENT_SECRET, show_dialog = True, redirect_uri=SPOTIPY_REDIRECT_URI, scope=SCOPE))
