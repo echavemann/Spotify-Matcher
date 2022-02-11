@@ -22,14 +22,33 @@ long_term_top_tracks = sp.current_user_top_tracks(limit = 50, offset = 0, time_r
 user_profile_name = sp.current_user()['display_name']
 genre = sp.recommendation_genre_seeds()
 
-def get_track_ids(list):
+def get_track_ids(id_info):
     track_ids = []
-    for song in list['items']:
+    for song in id_info['items']:
         track_ids.append(song['id'])
     return track_ids
+
+def get_artist_ids(id_info):
+    artist_ids = []
+    for song in id_info['items']:
+        artist_ids.append(song['artists'][0]['id'])
+    return artist_ids
+
+short_term_artist_ids = get_artist_ids(short_term_top_tracks)
+medium_term_artist_ids = get_artist_ids(medium_term_top_tracks)
+long_term_artist_ids = get_artist_ids(long_term_top_tracks)
+
 short_term_track_ids = get_track_ids(short_term_top_tracks)
 medium_term_track_ids = get_track_ids(medium_term_top_tracks)
 long_term_track_ids = get_track_ids(long_term_top_tracks)
+
+def list_to_list(id_list):
+    new_list = []
+    for item in id_list:
+        var = []
+        var.append(item)
+        new_list.append(var)
+    return new_list
 
 def get_track_features(id):
     meta = sp.track(id)
@@ -37,10 +56,10 @@ def get_track_features(id):
     name = meta['name']
     album = meta['album']['name']
     artist = meta['album']['artists'][0]['name']
-    track_info = [name, album, artist]
+    track_info = [name, artist, album]
     return track_info
 
-header = [["Song Name", "Album", "Artist", '', "Song Name", "Album", "Artist", '', "Song Name", "Album", "Artist", '', "Top Genres"]]
+header = [["Song Name", "Artist", "Album", '', "Song Name", "Artist", "Album", '', "Song Name", "Artist", "Album"]]
 short_term_data = []
 medium_term_data = []
 long_term_data = []
@@ -69,7 +88,15 @@ for track in long_term_track_ids:
         varList.append(attribute)
     long_term_data.append(varList)
 
-#Sheets Data
+short_term_track_ids = list_to_list(short_term_track_ids)
+medium_term_track_ids = list_to_list(medium_term_track_ids)
+long_term_track_ids = list_to_list(long_term_track_ids)
+
+short_term_artist_ids = list_to_list(short_term_artist_ids)
+medium_term_artist_ids = list_to_list(medium_term_artist_ids)
+long_term_artist_ids = list_to_list(long_term_artist_ids)
+
+
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 SERVICE_ACCOUNT_FILE = ('key.json')
 
@@ -110,13 +137,28 @@ sheet.values().update(spreadsheetId=spreadsheetURL, range=user_profile_name + '!
                                 body={'values':header}).execute()
 
 sheet.values().update(spreadsheetId=spreadsheetURL, range=user_profile_name + '!A2', valueInputOption='USER_ENTERED', 
-                                body={'values':short_term_data}).execute()
+                                body={'values':short_term_track_ids}).execute()
 
 sheet.values().update(spreadsheetId=spreadsheetURL, range=user_profile_name + '!E2', valueInputOption='USER_ENTERED', 
-                                body={'values':medium_term_data}).execute()
+                                body={'values':medium_term_track_ids}).execute()
 
 sheet.values().update(spreadsheetId=spreadsheetURL, range=user_profile_name + '!I2', valueInputOption='USER_ENTERED', 
-                                body={'values':long_term_data}).execute()
+                                body={'values':long_term_track_ids}).execute()
 
-sheet.values().update(spreadsheetId=spreadsheetURL, range=user_profile_name + '!M2', valueInputOption='USER_ENTERED', 
-                                body={'values':genres}).execute()
+sheet.values().update(spreadsheetId=spreadsheetURL, range=user_profile_name + '!B2', valueInputOption='USER_ENTERED', 
+                                body={'values':short_term_artist_ids}).execute()
+
+sheet.values().update(spreadsheetId=spreadsheetURL, range=user_profile_name + '!F2', valueInputOption='USER_ENTERED', 
+                                body={'values':medium_term_artist_ids}).execute()
+
+sheet.values().update(spreadsheetId=spreadsheetURL, range=user_profile_name + '!J2', valueInputOption='USER_ENTERED', 
+                                body={'values':long_term_artist_ids}).execute()
+
+sheet.values().update(spreadsheetId=spreadsheetURL, range=user_profile_name + '!A55', valueInputOption='USER_ENTERED', 
+                                body={'values':short_term_data}).execute()
+
+sheet.values().update(spreadsheetId=spreadsheetURL, range=user_profile_name + '!E55', valueInputOption='USER_ENTERED', 
+                                body={'values':medium_term_data}).execute()
+
+sheet.values().update(spreadsheetId=spreadsheetURL, range=user_profile_name + '!I55', valueInputOption='USER_ENTERED', 
+                                body={'values':long_term_data}).execute()
