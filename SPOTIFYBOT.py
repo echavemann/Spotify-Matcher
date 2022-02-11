@@ -10,13 +10,19 @@ from google.oauth2 import service_account
 SPOTIPY_CLIENT_ID = ''
 SPOTIPY_CLIENT_SECRET = ''
 SPOTIPY_REDIRECT_URI = 'http://127.0.0.1:9090'
-SCOPE = 'user-top-read'
+SCOPE = 'user-top-read', 'user-top-read'
 
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=SPOTIPY_CLIENT_ID, 
 client_secret=SPOTIPY_CLIENT_SECRET, show_dialog = True, redirect_uri=SPOTIPY_REDIRECT_URI, scope=SCOPE))
 
 top_tracks_short = sp.current_user_top_tracks(limit = 50, offset = 0, time_range="short_term")
-# print(top_tracks_short)
+
+short_term_top_tracks = sp.current_user_top_tracks(limit = 50, offset = 0, time_range="short_term")
+medium_term_top_tracks = sp.current_user_top_tracks(limit = 50, offset = 0, time_range="medium_term")
+long_term_top_tracks = sp.current_user_top_tracks(limit = 50, offset = 0, time_range="long_term")
+
+user_profile_name = sp.current_user()['display_name']
+genre = sp.recommendation_genre_seeds()
 
 def get_track_ids(list):
     track_ids = []
@@ -58,5 +64,8 @@ service = build('sheets', 'v4', credentials=creds)
 
 sheet = service.spreadsheets()
 
+new_sheet = {'requests': [{'addSheet':{'properties':{'title': user_profile_name}}}]}
+
+res = service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetURL, body=new_sheet).execute()
 
 request = sheet.values().update(spreadsheetId=spreadsheetURL, range='Sheet1!B2', valueInputOption='USER_ENTERED', body={'values':data}).execute()
