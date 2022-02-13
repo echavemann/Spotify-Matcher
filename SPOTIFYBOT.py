@@ -21,7 +21,6 @@ medium_term_top_tracks = sp.current_user_top_tracks(limit = 50, offset = 0, time
 long_term_top_tracks = sp.current_user_top_tracks(limit = 50, offset = 0, time_range="long_term")
 
 user_profile_name = sp.current_user()['display_name']
-genre = sp.recommendation_genre_seeds()
 
 def get_track_ids(id_info):
     track_ids = []
@@ -43,6 +42,18 @@ short_term_track_ids = get_track_ids(short_term_top_tracks)
 medium_term_track_ids = get_track_ids(medium_term_top_tracks)
 long_term_track_ids = get_track_ids(long_term_top_tracks)
 
+def get_genres(artist_list):
+    newDict = {}
+    for id in artist_list:
+        meta = sp.artist(id)['genres']
+        for genre in meta:
+            try:
+                newDict[genre] += 1
+            except:
+                newDict[genre] = 1
+    return newDict
+
+
 def list_to_list(id_list):
     new_list = []
     for item in id_list:
@@ -50,6 +61,18 @@ def list_to_list(id_list):
         var.append(item)
         new_list.append(var)
     return new_list
+
+short_term_genres = get_genres(short_term_artist_ids)
+medium_term_genres = get_genres(medium_term_artist_ids)
+long_term_genres = get_genres(long_term_artist_ids)
+
+short_term_genre_types = list_to_list(list(short_term_genres.keys()))
+medium_term_genre_types = list_to_list(list(medium_term_genres.keys()))
+long_term_genre_types = list_to_list(list(long_term_genres.keys()))
+
+short_term_genre_count = list_to_list(list(short_term_genres.values()))
+medium_term_genre_count = list_to_list(list(medium_term_genres.values()))
+long_term_genre_count = list_to_list(list(long_term_genres.values()))
 
 def get_track_features(id):
     meta = sp.track(id)
@@ -60,16 +83,10 @@ def get_track_features(id):
     track_info = [name, artist, album]
     return track_info
 
-header = [["Song Name", "Artist", "Album", '', "Song Name", "Artist", "Album", '', "Song Name", "Artist", "Album"]]
+header = [["Song Name", "Artist", "Album", '', "Song Name", "Artist", "Album", '', "Song Name", "Artist", "Album", '', 'Genres', 'Count', '', 'Genres', 'Count', '', 'Genres', 'Count']]
 short_term_data = []
 medium_term_data = []
 long_term_data = []
-genres = []
-
-for value in genre['genres']:
-    temp = []
-    temp.append(value)
-    genres.append(temp)
 
 for track in short_term_track_ids:
     varList = []
@@ -163,3 +180,21 @@ sheet.values().update(spreadsheetId=spreadsheetURL, range=user_profile_name + '!
 
 sheet.values().update(spreadsheetId=spreadsheetURL, range=user_profile_name + '!I55', valueInputOption='USER_ENTERED', 
                                 body={'values':long_term_data}).execute()
+
+sheet.values().update(spreadsheetId=spreadsheetURL, range=user_profile_name + '!M2', valueInputOption='USER_ENTERED', 
+                                body={'values':short_term_genre_types}).execute()
+
+sheet.values().update(spreadsheetId=spreadsheetURL, range=user_profile_name + '!N2', valueInputOption='USER_ENTERED', 
+                                body={'values':short_term_genre_count}).execute()
+
+sheet.values().update(spreadsheetId=spreadsheetURL, range=user_profile_name + '!P2', valueInputOption='USER_ENTERED', 
+                                body={'values':medium_term_genre_types}).execute()
+
+sheet.values().update(spreadsheetId=spreadsheetURL, range=user_profile_name + '!Q2', valueInputOption='USER_ENTERED', 
+                                body={'values':medium_term_genre_count}).execute()
+
+sheet.values().update(spreadsheetId=spreadsheetURL, range=user_profile_name + '!S2', valueInputOption='USER_ENTERED', 
+                                body={'values':long_term_genre_types}).execute()
+
+sheet.values().update(spreadsheetId=spreadsheetURL, range=user_profile_name + '!T2', valueInputOption='USER_ENTERED', 
+                                body={'values':long_term_genre_count}).execute()
