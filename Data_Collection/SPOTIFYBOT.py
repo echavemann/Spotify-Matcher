@@ -1,5 +1,7 @@
 import requests
 import spotipy
+import selenium
+import splinter
 import pandas as pd
 from spotipy.oauth2 import SpotifyOAuth
 import json
