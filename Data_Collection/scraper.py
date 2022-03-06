@@ -34,3 +34,5 @@ browser.find_by_xpath('/html/body/div[1]/div/div/main/div/div/section[2]/section
 browser.find_by_xpath('/html/body/div[1]/div/div/main/div/div/section[2]/section/div/div[4]/div/div/div/div/div[2]/div/div[2]/label/input').fill(Email)
 #CLick add
 browser.find_by_xpath('/html/body/div[1]/div/div/main/div/div/section[2]/section/div/div[4]/div/div/div/div/div[3]/div/button[1]').click()
+
+#Note: you can vary the sleeps or use an explicit wait, but the sleeps set at 1/10th of a second seem to be very consistent for a good range of internet connections. 
